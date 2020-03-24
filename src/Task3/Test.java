@@ -9,24 +9,21 @@ public class Test {
 
         for (int i = 0; i < 20; i++) {
             appleBox.putFruitInBox(new Apple());
-        }
-
-        for (int i = 0; i < 20; i++) {
             appleBox2.putFruitInBox(new Apple());
-        }
-
-        for (int i = 0; i < 20; i++) {
             orangeBox.putFruitInBox(new Orange());
         }
 
-        System.out.println("Корзина с яблоками 1 " + appleBox.boxInfo());
-        System.out.println("Корзина с яблоками 2 " + appleBox2.boxInfo());
-        System.out.println("Корзина с апельсинами 1 " + orangeBox.boxInfo());
+        System.out.println("Корзина с яблоками 1: " + appleBox.boxInfo());
+        System.out.println("Корзина с яблоками 2: " + appleBox2.boxInfo());
+        System.out.println("Корзина с апельсинами 1: " + orangeBox.boxInfo());
+
+        System.out.println("Сравниваем корзину с яблоками 1 с корзиной с яблоками 2: " + appleBox.compare(appleBox2));
+        System.out.println("Сравниваем корзину с яблоками 1 с корзиной с апельсинами: " + appleBox.compare(orangeBox));
 
         System.out.println("Пересыпаем корзину с яблоками 1 в корзину с яблоками 2");
         appleBox.putBoxInBox(appleBox2);
 
-        System.out.println("Корзина с яблоками 1 " + appleBox.boxInfo());
-        System.out.println("Корзина с яблоками 2 " + appleBox2.boxInfo());
+        System.out.println("Корзина с яблоками 1: " + appleBox.boxInfo());
+        System.out.println("Корзина с яблоками 2: " + appleBox2.boxInfo());
     }
 }
