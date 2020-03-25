@@ -14,6 +14,7 @@ public class Task1 {
         System.out.println("Массив после обработки: " + Arrays.toString(stringsArray));
     }
 
+    // Меняет местами жва элемента переданного массива
     public static <T> void shiftElementOfArray(T[] array, int firstElement, int secondElement) {
         if (firstElement >= array.length || secondElement >= array.length || firstElement < 0 || secondElement < 0) {
             throw new ArrayIndexOutOfBoundsException("Неверные индексы элементов");

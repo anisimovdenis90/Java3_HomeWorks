@@ -1,10 +1,22 @@
 package Task3;
 
 public class Orange extends Fruit {
-    private float weight = 1.5f;
+
+    public Orange(float weight) {
+        super(weight);
+    }
+
+    public Orange() {
+        super(1.5f);
+    }
 
     @Override
     public float getWeight() {
-        return weight;
+        return super.getWeight();
+    }
+
+    @Override
+    public String getFruitType() {
+        return this.getClass().getSimpleName();
     }
 }

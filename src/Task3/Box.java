@@ -4,50 +4,56 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Box<T extends Fruit> {
+    private static int count = 0;
+    private int number;
     private ArrayList<T> quantityOfFruits;
+    private T type;
 
     // Конструкторы
-    public Box() {
+    public Box(T fruit) {
+        count++;
         this.quantityOfFruits = new ArrayList<>();
-    }
-
-    public Box(ArrayList<T> quantityOfFruits) {
-        this.quantityOfFruits = quantityOfFruits;
+        this.quantityOfFruits.add(fruit);
+        this.type = fruit;
+        this.number = count;
     }
 
     // Возвращает АрайЛист фруктов в корзине
     public ArrayList<T> getFruits() {
-        return quantityOfFruits;
+        return this.quantityOfFruits;
     }
 
     // Очищает корзину от фруктов
     public void clear() {
-        quantityOfFruits.clear();
+        this.quantityOfFruits.clear();
     }
 
     // Помещает фрукт в корзину
     public void putFruitInBox(T fruit) {
-        quantityOfFruits.add(fruit);
+        this.quantityOfFruits.add(fruit);
     }
 
     // Помещает АрайЛист фруктов в корзину
     public void putFruitsInBox(ArrayList<T> fruits) {
-        quantityOfFruits.addAll(fruits);
+        this.quantityOfFruits.addAll(fruits);
     }
 
-    // Пересыпание коробку в коробку
+    // Пересыпает содержимое коробки в коробку
     public void putBoxInBox(Box<T> box2) {
         box2.putFruitsInBox(this.getFruits());
-//        box2.getFruits().addAll(this.quantityOfFruits);
         this.clear();
     }
 
     // Возвращает вес коробки с фруктами
     public float getWeight() {
-        if (quantityOfFruits.size() == 0) {
-            return 0;
+        float boxWeight = 0.0f;
+        if (this.quantityOfFruits.size() == 0) {
+            return 0.0f;
         } else  {
-            return (quantityOfFruits.get(0).getWeight() * quantityOfFruits.size());
+            for (T fruit : this.quantityOfFruits) {
+                boxWeight += fruit.getWeight();
+            }
+            return (boxWeight);
         }
     }
 
@@ -57,6 +63,10 @@ public class Box<T extends Fruit> {
     }
 
     public String boxInfo() {
-        return "Количество фруктов в корзине: " + this.quantityOfFruits.size() + " Вес корзины: " +  this.getWeight();
+        return "Коробка " + number + " с " + this.type.getFruitType() + ", кол-во: " + this.quantityOfFruits.size() + ", вес коробки: " +  this.getWeight();
+    }
+
+    public String boxShortInfo() {
+        return "Коробка " + number + " с " + this.type.getFruitType();
     }
 }

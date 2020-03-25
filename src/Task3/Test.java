@@ -3,9 +3,9 @@ package Task3;
 public class Test {
     public static void main(String[] args) {
 
-        Box<Apple> appleBox = new Box<>();
-        Box<Apple> appleBox2 = new Box<>();
-        Box<Orange> orangeBox = new Box<>();
+        Box<Apple> appleBox = new Box<>(new Apple());
+        Box<Apple> appleBox2 = new Box<>(new Apple());
+        Box<Orange> orangeBox = new Box<>(new Orange());
 
         for (int i = 0; i < 20; i++) {
             appleBox.putFruitInBox(new Apple());
@@ -13,17 +13,17 @@ public class Test {
             orangeBox.putFruitInBox(new Orange());
         }
 
-        System.out.println("Корзина с яблоками 1: " + appleBox.boxInfo());
-        System.out.println("Корзина с яблоками 2: " + appleBox2.boxInfo());
-        System.out.println("Корзина с апельсинами 1: " + orangeBox.boxInfo());
+        System.out.println(appleBox.boxInfo());
+        System.out.println(appleBox2.boxInfo());
+        System.out.println(orangeBox.boxInfo());
 
-        System.out.println("Сравниваем корзину с яблоками 1 с корзиной с яблоками 2: " + appleBox.compare(appleBox2));
-        System.out.println("Сравниваем корзину с яблоками 1 с корзиной с апельсинами: " + appleBox.compare(orangeBox));
+        System.out.println("Сравниваем " + appleBox.boxShortInfo() + " и " + appleBox2.boxShortInfo() + " - " + appleBox.compare(appleBox2));
+        System.out.println("Сравниваем " + appleBox.boxShortInfo() + " и " + orangeBox.boxShortInfo() + " - " + appleBox.compare(orangeBox));
 
-        System.out.println("Пересыпаем корзину с яблоками 1 в корзину с яблоками 2");
+        System.out.println("Пересыпаем " + appleBox.boxShortInfo() + " в " + appleBox2.boxShortInfo());
         appleBox.putBoxInBox(appleBox2);
 
-        System.out.println("Корзина с яблоками 1: " + appleBox.boxInfo());
-        System.out.println("Корзина с яблоками 2: " + appleBox2.boxInfo());
+        System.out.println(appleBox.boxInfo());
+        System.out.println(appleBox2.boxInfo());
     }
 }
