@@ -34,7 +34,7 @@ public class NetworkService {
     /**
      * Создание подключения клиента к серверу
      *
-     * @param controller - ссылка на контроллер клиента
+     * @param controller   - ссылка на контроллер клиента
      * @throws IOException - пробрасываем ошибку подключения
      */
     public void connect(ClientController controller) throws IOException {
@@ -68,7 +68,7 @@ public class NetworkService {
                                 String message = commandData.getMessage();
                                 String username = commandData.getUsername();
                                 if (username != null) {
-                                    message = username + " :" + message;
+                                    message = username + ": " + message;
                                 }
                                 messageHandler.handle(message);
                             }
@@ -124,7 +124,7 @@ public class NetworkService {
     /**
      * Отправка сообщения клиентом
      *
-     * @param command - Объект с текстовой информацией
+     * @param command      - Объект с текстовой информацией
      * @throws IOException - пробрасываем исключение при отправке текстового сообщения
      */
     public void sendCommand(Command command) throws IOException {

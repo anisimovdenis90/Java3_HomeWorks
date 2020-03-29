@@ -4,7 +4,6 @@ import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.server.auth.AuthService;
 import ru.geekbrains.java2.server.auth.BaseAuthService;
 import ru.geekbrains.java2.server.client.ClientHandler;
-import ru.geekbrains.java2.client.commands.PrivateMessageCommand;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -32,6 +31,7 @@ public class NetworkServer {
             System.out.println("Сервер был успешно запущен на порту " + port);
             //  Запускаем сервис авторизации
             authService.start();
+            System.out.println("Сервис авторизации успешно запущен");
             //  Создаем список подключений
             while (true) {
                 System.out.println("Ожидание подключения клиента...");

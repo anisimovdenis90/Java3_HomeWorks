@@ -139,8 +139,8 @@ public class ClientHandler {
     /**
      * Метод обработки команды авторизации
      *
-     * @param command - команда авторизации
-     * @return - boolean
+     * @param command      - команда авторизации
+     * @return             - boolean
      * @throws IOException - пробрасывается исключение
      */
     private boolean processAuthCommand(Command command) throws IOException {
@@ -187,8 +187,8 @@ public class ClientHandler {
             }
             switch (command.getType()) {
                 case END: {
-                    System.out.println("Получена команда 'END'");
                     String message = nickname + " вышел из чата!";
+                    System.out.println(message);
                     networkServer.broadcastMessage(Command.messageCommand(null, message), this);
                     return;
                 }

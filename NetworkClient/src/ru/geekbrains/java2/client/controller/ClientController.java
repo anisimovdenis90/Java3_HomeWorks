@@ -194,8 +194,4 @@ public class ClientController {
     public void updateTimeoutLabel(String message) {
         authDialog.updateTimeOutAuthLabel(message);
     }
-
-    public void appendMessage(String message) {
-        clientChat.appendMessage(message);
-    }
 }

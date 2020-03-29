@@ -12,7 +12,7 @@ public class ServerApp {
     /**
      * Метод получения номера порта из аргумента
      * @param args - аргумент
-     * @return - номер порта
+     * @return int - номер порта
      */
     private static int getServerPort(String[] args) {
         int port = DEFAULT_PORT;
