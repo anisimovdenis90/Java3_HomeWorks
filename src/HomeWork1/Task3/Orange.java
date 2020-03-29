@@ -1,0 +1,22 @@
+package HomeWork1.Task3;
+
+public class Orange extends Fruit {
+
+    public Orange(float weight) {
+        super(weight);
+    }
+
+    public Orange() {
+        super(1.5f);
+    }
+
+    @Override
+    public float getWeight() {
+        return super.getWeight();
+    }
+
+    @Override
+    public String getFruitType() {
+        return this.getClass().getSimpleName();
+    }
+}
