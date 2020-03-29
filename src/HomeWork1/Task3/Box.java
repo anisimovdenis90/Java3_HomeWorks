@@ -1,7 +1,6 @@
-package Task3;
+package HomeWork1.Task3;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Box<T extends Fruit> {
     private static int count = 0;

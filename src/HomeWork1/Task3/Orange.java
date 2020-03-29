@@ -1,14 +1,16 @@
-package Task3;
+package HomeWork1.Task3;
 
-public class Apple extends Fruit {
+public class Orange extends Fruit {
 
-    public Apple(float weight) {
+    public Orange(float weight) {
         super(weight);
     }
 
-    public Apple() {
-        super(1.0f);
+    public Orange() {
+        super(1.5f);
     }
+
+    @Override
     public float getWeight() {
         return super.getWeight();
     }

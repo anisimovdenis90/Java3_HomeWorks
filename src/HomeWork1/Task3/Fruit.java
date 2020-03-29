@@ -1,4 +1,4 @@
-package Task3;
+package HomeWork1.Task3;
 
 public abstract class Fruit {
     private float weight;
