@@ -14,6 +14,8 @@ public class ClientChat extends JFrame {
     private JTextField messageTextField;
     private JButton sendButton;
     private JTextArea chatText;
+    private JTextField nicknameText;
+    private JButton changeNickButton;
     // Ссылка на контроллер
     private ClientController controller;
     private String selectedContact = "All";
@@ -40,6 +42,20 @@ public class ClientChat extends JFrame {
     private void addListeners() {
         sendButton.addActionListener(e -> ClientChat.this.sendMessage());
         messageTextField.addActionListener(e -> sendMessage());
+        changeNickButton.addActionListener(e -> ClientChat.this.sendChangeNicknameMessage());
+    }
+
+    /**
+     * отправляет сообщение о смене никнейма
+     */
+    private void sendChangeNicknameMessage() {
+        String newNickname = nicknameText.getText().trim();
+        if (newNickname.length() < 3) {
+            showError("Слишком короткое имя пользователя.");
+            return;
+        }
+        controller.sendChangeNickNameMessage(newNickname);
+        nicknameText.setText(null);
     }
 
     /**
@@ -58,7 +74,7 @@ public class ClientChat extends JFrame {
         // Отправка сообщения выбранному контакту
         else {
             String username = usersList.getSelectedValue();
-            appendMessage("Я лично username: " + message);
+            appendMessage(String.format("Я лично %s: %s", username, message));
             controller.sendPrivateMessage(username, message, controller.getUsername());
         }
         // Очищаем окно ввода текста после отправки сообщения
@@ -86,6 +102,10 @@ public class ClientChat extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Ошибка!", JOptionPane.ERROR_MESSAGE);
     }
 
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
+
     /**
      * Обновление списка контактов
      *
@@ -97,5 +117,9 @@ public class ClientChat extends JFrame {
             model.addAll(users);
             usersList.setModel(model);
         });
+    }
+
+    public void updateNickname(String nickname) {
+        SwingUtilities.invokeLater(() -> ClientChat.this.setTitle(nickname));
     }
 }

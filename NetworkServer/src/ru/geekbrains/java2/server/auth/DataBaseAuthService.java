@@ -58,6 +58,24 @@ public class DataBaseAuthService implements AuthService {
     }
 
     /**
+     * Изменяет никнейм пользователя
+     * @param oldNickname - старый никнейм пользователя
+     * @param newNickname - новый никнейм
+     * @return int        - кол-во измененных строк
+     */
+    @Override
+    public int changeNickname(String oldNickname, String newNickname) {
+        int result = 0;
+        try {
+            result = statement.executeUpdate(String.format("UPDATE users SET nickname = '%s' WHERE nickname = '%s'", newNickname, oldNickname));
+        } catch (SQLException e) {
+            System.err.println("Ошибка изменения данных в базе");
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
      * Закрывает соединение с базой данных
      */
     @Override

@@ -80,7 +80,7 @@ public class ClientController {
      *
      * @param nickname - String имя клиента
      */
-    private void setUserName(String nickname) {
+    public void setUserName(String nickname) {
         this.nickname = nickname;
     }
 
@@ -144,6 +144,14 @@ public class ClientController {
         }
     }
 
+    public void sendChangeNickNameMessage(String newNickname) {
+        try {
+            networkService.sendCommand(Command.changeNicknameMessageCommand(this.getUsername(), newNickname));
+        } catch (IOException e) {
+            showErrorMessage(e.getMessage());
+        }
+    }
+
     /**
      * Закрываем соединение при отключении клиента
      */
@@ -172,6 +180,14 @@ public class ClientController {
      */
     public void showErrorAndClose(String errorMessage) {
         authDialog.showErrorAndClose(errorMessage);
+    }
+
+    public void showMessage(String message) {
+        clientChat.showMessage(message);
+    }
+
+    public void updateNickname(String nickname) {
+        clientChat.updateNickname(nickname);
     }
 
     /**

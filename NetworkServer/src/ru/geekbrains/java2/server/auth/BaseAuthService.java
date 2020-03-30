@@ -42,6 +42,11 @@ public class BaseAuthService implements AuthService {
         return null;
     }
 
+    @Override
+    public int changeNickname(String oldNickname, String newNickname) {
+        return 0;
+    }
+
     /**
      * Запуск сервиса авторизации
      */
