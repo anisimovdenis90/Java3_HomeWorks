@@ -53,6 +53,13 @@ public class Command implements Serializable {
         return command;
     }
 
+    public static Command changeNicknameMessageCommand(String oldNickname, String newNickname) {
+        Command command = new Command();
+        command.type = CommandType.CHANGE_NICKNAME_MESSAGE;
+        command.data = new MessageCommand(oldNickname, newNickname);
+        return command;
+    }
+
     public static Command timeoutAuthMessageCommand(String message) {
         Command command = new Command();
         command.type = CommandType.TIMEOUT_MESSAGE;

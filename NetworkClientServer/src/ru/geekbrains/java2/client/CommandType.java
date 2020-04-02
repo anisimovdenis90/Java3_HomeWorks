@@ -9,6 +9,7 @@ public enum CommandType {
     BROADCAST_MESSAGE,
     MESSAGE,
     TIMEOUT_MESSAGE,
+    CHANGE_NICKNAME_MESSAGE,
     UPDATE_USERS_LIST,
     ERROR,
     END

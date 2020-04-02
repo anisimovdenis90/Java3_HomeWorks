@@ -108,6 +108,16 @@ public class NetworkService {
                             controller.updateUsersList(users);
                             break;
                         }
+                        case CHANGE_NICKNAME_MESSAGE: {
+                            MessageCommand commandData = (MessageCommand) command.getData();
+                            String username = commandData.getUsername();
+                            String message = commandData.getMessage();
+                            nickname = username;
+                            controller.setUserName(nickname);
+                            controller.showMessage(message);
+                            controller.updateNickname(nickname);
+                            break;
+                        }
                         default:
                             System.err.println("Неверный тип команды: " + command.getType());
                     }

@@ -4,6 +4,7 @@ import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.client.CommandType;
 import ru.geekbrains.java2.client.commands.AuthCommand;
 import ru.geekbrains.java2.client.commands.BroadcastMessageCommand;
+import ru.geekbrains.java2.client.commands.MessageCommand;
 import ru.geekbrains.java2.client.commands.PrivateMessageCommand;
 import ru.geekbrains.java2.server.NetworkServer;
 
@@ -203,6 +204,27 @@ public class ClientHandler {
                     BroadcastMessageCommand commandData = (BroadcastMessageCommand) command.getData();
                     String message = commandData.getMessage();
                     networkServer.broadcastMessage(Command.messageCommand(nickname, message), this);
+                    break;
+                }
+                case CHANGE_NICKNAME_MESSAGE: {
+                    MessageCommand commandData = (MessageCommand) command.getData();
+                    String oldNickname = commandData.getUsername();
+                    String newNickname = commandData.getMessage();
+                    int result = networkServer.getAuthService().changeNickname(oldNickname, newNickname);
+                    if (result < 1) {
+                        Command errorCommand = Command.errorCommand("Введенное имя пользователя уже используется.");
+                        sendMessage(errorCommand);
+                    } else {
+                        networkServer.unsubscribe(this);
+                        nickname = newNickname;
+                        String broadcastMessage = String.format("%s сменил имя на %s!", oldNickname, nickname);
+                        System.out.println(broadcastMessage);
+                        networkServer.broadcastMessage(Command.messageCommand(null, broadcastMessage), this);
+                        String message = String.format("Ваше имя успешно изменено на '%s'!", newNickname);
+                        Command changeNickNameMessageCommand = Command.changeNicknameMessageCommand(newNickname, message);
+                        sendMessage(changeNickNameMessageCommand);
+                        networkServer.subscribe(this);
+                    }
                     break;
                 }
                 default:
