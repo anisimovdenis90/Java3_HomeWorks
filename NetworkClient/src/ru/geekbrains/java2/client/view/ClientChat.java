@@ -87,6 +87,7 @@ public class ClientChat extends JFrame {
      * @param message - текст полученного сообщения
      */
     public void appendMessage(String message) {
+        controller.getChatHistory().writeHistory(message);
         SwingUtilities.invokeLater(() -> {
             chatText.append(message);
             chatText.append(System.lineSeparator());
