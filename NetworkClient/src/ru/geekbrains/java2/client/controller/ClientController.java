@@ -201,6 +201,7 @@ public class ClientController {
     }
 
     public void updateNickname(String nickname) {
+        chatHistory.renameFileHistory(nickname);
         clientChat.updateNickname(nickname);
     }
 
