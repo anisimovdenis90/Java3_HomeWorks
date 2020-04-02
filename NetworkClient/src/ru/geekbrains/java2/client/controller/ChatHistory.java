@@ -57,7 +57,7 @@ public class ChatHistory {
                 i = stringsOfHistory.size() - COUNT_STRINGS;
             }
             for (int j = i; j < stringsOfHistory.size(); j++) {
-                controller.getClientChat().appendMessage(stringsOfHistory.get(j));
+                controller.getClientChat().appendFromHistory(stringsOfHistory.get(j));
             }
         } catch (IOException e) {
             e.printStackTrace();

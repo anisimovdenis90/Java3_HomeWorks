@@ -94,6 +94,10 @@ public class ClientChat extends JFrame {
         });
     }
 
+    public void appendFromHistory(String message) {
+        chatText.append(message + System.lineSeparator());
+    }
+
     /**
      * Отображает предупреждающее окно
      *

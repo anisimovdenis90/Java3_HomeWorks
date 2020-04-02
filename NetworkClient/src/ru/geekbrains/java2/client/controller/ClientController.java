@@ -167,7 +167,9 @@ public class ClientController {
      * Закрываем соединение при отключении клиента
      */
     public void shutdown() {
+        // Останавливаем поток чтения из файла истории
         chatHistory.stopWriteChatHistory();
+        // Закрывается соединение
         networkService.close();
     }
 
