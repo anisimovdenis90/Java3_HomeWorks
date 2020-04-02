@@ -89,12 +89,11 @@ public class ClientChat extends JFrame {
     public void appendMessage(String message) {
         controller.getChatHistory().writeHistory(message);
         SwingUtilities.invokeLater(() -> {
-            chatText.append(message);
-            chatText.append(System.lineSeparator());
+            updateChatText(message);
         });
     }
 
-    public void appendFromHistory(String message) {
+    public void updateChatText(String message) {
         chatText.append(message + System.lineSeparator());
     }
 
