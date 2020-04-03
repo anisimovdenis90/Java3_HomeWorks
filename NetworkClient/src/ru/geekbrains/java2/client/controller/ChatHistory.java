@@ -1,24 +1,23 @@
 package ru.geekbrains.java2.client.controller;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.List;
 
 public class ChatHistory {
     private static final int COUNT_STRINGS = 100;
-    private static final String ADD_NAME = "history_";
+    private static final String ORIGIN_NAME = "history_";
     private static final String FILE_EXTENSION = ".txt";
 
     private ClientController controller;
     private BufferedWriter fileWriter;
-    private String fileName;
-    private File fileHistory;
+    private String historyFileName;
+    private File historyFile;
 
-    public ChatHistory(ClientController controller, String nickname) {
+    public ChatHistory(ClientController controller, String userID) {
         this.controller = controller;
-        fileName = ADD_NAME + nickname + FILE_EXTENSION;
-        this.fileHistory = new File(fileName);
+        historyFileName = ORIGIN_NAME + userID + FILE_EXTENSION;
+        this.historyFile = new File(historyFileName);
         startWriteChatHistory();
     }
 
@@ -27,7 +26,7 @@ public class ChatHistory {
      */
     public void startWriteChatHistory() {
         try {
-            fileWriter = new BufferedWriter(new FileWriter(fileHistory, true));
+            fileWriter = new BufferedWriter(new FileWriter(historyFile, true));
         } catch (IOException e) {
             System.err.println("Ошибка при создании потока записи в файл истории!");
             e.printStackTrace();
@@ -50,16 +49,16 @@ public class ChatHistory {
     }
 
     /**
-     * Считывает количество строк из файла истории, заданное в COUNT_STRINGS
+     * Считывает количество строк с конца файла, заданное в COUNT_STRINGS
      */
     public void readHistory() {
-        // если файл пустой, выходим
-        if (fileHistory.length() == 0) {
-            return;
-        }
         try {
+            // если файл пустой или отсутствует, выходим
+            if (!historyFile.exists() || historyFile.length() == 0) {
+                return;
+            }
             // Получаем массив строк из файла истории, проверяем размерность
-            List<String> stringsOfHistory = Files.readAllLines(Paths.get(fileName));
+            List<String> stringsOfHistory = Files.readAllLines(Paths.get(historyFileName));
             int i = 0;
             if (stringsOfHistory.size() > COUNT_STRINGS) {
                 i = stringsOfHistory.size() - COUNT_STRINGS;
@@ -72,21 +71,6 @@ public class ChatHistory {
             System.err.println("Ошибка чтения из файла истории!");
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Переименовывает файл истории при смене никнейма пользователем
-     * @param newNickname - новый никнейм
-     */
-    public void renameFileHistory(String newNickname) {
-        stopWriteChatHistory();
-        fileName = ADD_NAME + newNickname + FILE_EXTENSION;
-        File newFile = new File(fileName);
-        if (fileHistory.renameTo(new File(fileName))) {
-            System.out.println("Файл истории чата успешно переименован.");
-        }
-        fileHistory = newFile;
-        startWriteChatHistory();
     }
 
     /**

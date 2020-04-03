@@ -42,19 +42,20 @@ public class DataBaseAuthService implements AuthService {
      * @return String  - никнейм пользователя
      */
     @Override
-    public String getUsernameByLoginAndPassword(String login, String password) {
-        String nickname = null;
+    public String[] getUserNickAndIDByLoginAndPassword(String login, String password) {
+        String[] userNickAndID = new String[2];
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(String.format("SELECT nickname FROM users WHERE login = '%s' AND password = '%s'", login, password));
+            resultSet = statement.executeQuery(String.format("SELECT id, nickname FROM users WHERE login = '%s' AND password = '%s'", login, password));
             while (resultSet.next()) {
-                nickname = resultSet.getString("nickname");
+                userNickAndID[0] = "id" + resultSet.getString("id");
+                userNickAndID[1] = resultSet.getString("nickname");
             }
         } catch (SQLException e) {
             System.err.println("Ошибка получения данных из базы");
             e.printStackTrace();
         }
-        return nickname;
+        return userNickAndID;
     }
 
     /**

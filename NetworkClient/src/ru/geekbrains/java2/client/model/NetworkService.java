@@ -58,8 +58,9 @@ public class NetworkService {
                             // При успешной авторизации принимаем никнейм текущего контакта от сервера
                             AuthCommand commandData = (AuthCommand) command.getData();
                             nickname = commandData.getUsername();
+                            String userID = commandData.getUserID();
                             // Передаем никнейм контроллеру
-                            successfulAuthEvent.authIsSuccessful(nickname);
+                            successfulAuthEvent.authIsSuccessful(nickname, userID);
                             break;
                         }
                         case MESSAGE: {

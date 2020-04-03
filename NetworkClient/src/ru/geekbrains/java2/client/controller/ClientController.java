@@ -56,10 +56,10 @@ public class ClientController {
         // Задаем никнейм и открываем окно чата при успешной авторизации
         networkService.setSuccessfulAuthEvent(new AuthEvent() {
             @Override
-            public void authIsSuccessful(String nickname) {
+            public void authIsSuccessful(String nickname, String userID) {
                 ClientController.this.setUserName(nickname);
                 // Задаем заголовок окна чата
-                chatHistory = new ChatHistory(ClientController.this, nickname);
+                chatHistory = new ChatHistory(ClientController.this, userID);
                 chatHistory.readHistory();
                 clientChat.setTitle(nickname);
                 ClientController.this.openChat();
@@ -201,7 +201,6 @@ public class ClientController {
     }
 
     public void updateNickname(String nickname) {
-        chatHistory.renameFileHistory(nickname);
         clientChat.updateNickname(nickname);
     }
 
