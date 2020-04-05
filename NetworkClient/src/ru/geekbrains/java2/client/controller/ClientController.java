@@ -1,9 +1,9 @@
 package ru.geekbrains.java2.client.controller;
 
+import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.client.model.NetworkService;
 import ru.geekbrains.java2.client.view.AuthDialog;
 import ru.geekbrains.java2.client.view.ClientChat;
-import ru.geekbrains.java2.client.Command;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,9 +22,12 @@ public class ClientController {
         this.clientChat = new ClientChat(this);
     }
 
-    public void runApplication() throws IOException {
-        connectToServer();
-        runAuthProcess();
+    public void setUserName(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getUsername() {
+        return nickname;
     }
 
     public ClientChat getClientChat() {
@@ -33,6 +36,11 @@ public class ClientController {
 
     public ChatHistory getChatHistory() {
         return chatHistory;
+    }
+
+    public void runApplication() throws IOException {
+        connectToServer();
+        runAuthProcess();
     }
 
     /**
@@ -87,24 +95,6 @@ public class ClientController {
     }
 
     /**
-     * Устанавливает имя клиента
-     *
-     * @param nickname - String имя клиента
-     */
-    public void setUserName(String nickname) {
-        this.nickname = nickname;
-    }
-
-    /**
-     * Возвращает имя клиента
-     *
-     * @return - String имя клиента
-     */
-    public String getUsername() {
-        return nickname;
-    }
-
-    /**
      * Отправка сообщения авторизации, вызывается из окна авторизации (AuthDialog)
      *
      * @param login    - String логин
@@ -155,6 +145,11 @@ public class ClientController {
         }
     }
 
+    /**
+     * Отправка сообщения о смене никнейма
+     *
+     * @param newNickname - новый никнейм
+     */
     public void sendChangeNickNameMessage(String newNickname) {
         try {
             networkService.sendCommand(Command.changeNicknameMessageCommand(this.getUsername(), newNickname));
@@ -164,7 +159,7 @@ public class ClientController {
     }
 
     /**
-     * Закрываем соединение при отключении клиента
+     * Закрывает соединение при отключении клиента
      */
     public void shutdown() {
         // Останавливаем поток чтения из файла истории
@@ -190,6 +185,7 @@ public class ClientController {
 
     /**
      * Отображает ошибку и закрывает клиент
+     *
      * @param errorMessage - текст ошибки
      */
     public void showErrorAndClose(String errorMessage) {
@@ -201,7 +197,7 @@ public class ClientController {
     }
 
     public void updateNickname(String nickname) {
-        clientChat.updateNickname(nickname);
+        clientChat.updateTitle(nickname);
     }
 
     /**
@@ -219,6 +215,7 @@ public class ClientController {
 
     /**
      * Обновление таймера времени авторизации
+     *
      * @param message - оставшееся время в секундах
      */
     public void updateTimeoutLabel(String message) {

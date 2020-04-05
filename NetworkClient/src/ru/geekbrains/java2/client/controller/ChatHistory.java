@@ -1,10 +1,15 @@
 package ru.geekbrains.java2.client.controller;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class ChatHistory {
+
     private static final int COUNT_STRINGS = 100;
     private static final String ORIGIN_NAME = "history_";
     private static final String FILE_EXTENSION = ".txt";
@@ -35,6 +40,7 @@ public class ChatHistory {
 
     /**
      * Записывает историю чата в файл
+     *
      * @param message - сообщение для записи
      */
     public void writeHistory(String message) {

@@ -52,7 +52,7 @@ public class CensorService {
             try {
                 resultSet = dataBase.getStatement().executeQuery(String.format(SQL_FIRST + " = '%s'", wordToCheck));
                 resultSet.next();
-                if(resultSet.getString(DB_COLUMN_NAME) != null)
+                if (resultSet.getString(DB_COLUMN_NAME) != null)
                     return true;
             } catch (SQLException e) {
                 return false;

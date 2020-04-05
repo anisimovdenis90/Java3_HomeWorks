@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 public class AuthDialog extends JFrame {
+
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;

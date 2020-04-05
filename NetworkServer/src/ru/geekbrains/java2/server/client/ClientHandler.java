@@ -8,22 +8,28 @@ import ru.geekbrains.java2.client.commands.MessageCommand;
 import ru.geekbrains.java2.client.commands.PrivateMessageCommand;
 import ru.geekbrains.java2.server.NetworkServer;
 
-import java.net.Socket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 public class ClientHandler {
 
     private final NetworkServer networkServer;
     private final Socket clientSocket;
 
+    public boolean successfulAuth = false;
+
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
     private String nickname;
 
-    public boolean successfulAuth = false;
+    private String errorTimeoutAuthMessage = "Истекло время авторизации, соединение закрыто!";
+    private String notFindNickname = "Отсутствует учетная запись по данному логину и паролю!";
+    private String userAlreadyOnline = "Данный пользователь уже авторизован!";
+    private String nicknameAlreadyUsed = "Введенное имя пользователя уже используется.";
+    private String changeNicknameMessage = "Ваше имя успешно изменено на ";
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
         this.networkServer = networkServer;
@@ -33,7 +39,7 @@ public class ClientHandler {
     /**
      * Получение никнейма подключенного контакта
      *
-     * @return - String никнейм контакта
+     * @return String - никнейм контакта
      */
     public String getNickname() {
         return nickname;
@@ -125,7 +131,7 @@ public class ClientHandler {
                 // Если клиент не авторизовался, закрывается соединение
                 if (!successfulAuth) {
                     System.out.println("Истекло время авторизации, клиент отключен");
-                    Command timeOutAuthErrorCommand = Command.timeoutAuthErrorCommand("Истекло время авторизации, соединение закрыто!");
+                    Command timeOutAuthErrorCommand = Command.timeoutAuthErrorCommand(errorTimeoutAuthMessage);
                     sendMessage(timeOutAuthErrorCommand);
                     closeConnection();
                 }
@@ -138,10 +144,10 @@ public class ClientHandler {
     }
 
     /**
-     * Метод обработки команды авторизации
+     * Обработка команды авторизации
      *
-     * @param command      - команда авторизации
-     * @return             - boolean
+     * @param command - команда авторизации
+     * @return boolean     - true, если получен никнейм
      * @throws IOException - пробрасывается исключение
      */
     private boolean processAuthCommand(Command command) throws IOException {
@@ -154,18 +160,18 @@ public class ClientHandler {
         String username = networkServer.getAuthService().getUserNickAndIDByLoginAndPassword(login, password)[1];
         // Если никнейм отсутствует
         if (username == null) {
-            Command authErrorCommand = Command.authErrorCommand("Отсутствует учетная запись по данному логину и паролю!");
+            Command authErrorCommand = Command.authErrorCommand(notFindNickname);
             sendMessage(authErrorCommand);
             return false;
         }
-        // Если никнейм уже используется
+        // Если пользователь уже в сети
         else if (networkServer.isNicknameBusy(username)) {
-            Command authErrorCommand = Command.authErrorCommand("Данный пользователь уже авторизован!");
+            Command authErrorCommand = Command.authErrorCommand(userAlreadyOnline);
             sendMessage(authErrorCommand);
             return false;
         } else {
             nickname = username;
-            System.out.printf("Клиент %s авторизовался" + System.lineSeparator(), nickname);
+            System.out.println(String.format("Клиент %s авторизовался", nickname));
             String message = nickname + " зашел в чат!";
             networkServer.broadcastMessage(Command.messageCommand(null, message), this);
             // Отправляем отклик авторизации клиенту
@@ -214,21 +220,7 @@ public class ClientHandler {
                     MessageCommand commandData = (MessageCommand) command.getData();
                     String oldNickname = commandData.getUsername();
                     String newNickname = commandData.getMessage();
-                    int result = networkServer.getAuthService().changeNickname(oldNickname, newNickname);
-                    if (result < 1) {
-                        Command errorCommand = Command.errorCommand("Введенное имя пользователя уже используется.");
-                        sendMessage(errorCommand);
-                    } else {
-                        networkServer.unsubscribe(this);
-                        nickname = newNickname;
-                        String broadcastMessage = String.format("%s сменил имя на %s!", oldNickname, nickname);
-                        System.out.println(broadcastMessage);
-                        networkServer.broadcastMessage(Command.messageCommand(null, broadcastMessage), this);
-                        String message = String.format("Ваше имя успешно изменено на '%s'!", newNickname);
-                        Command changeNickNameMessageCommand = Command.changeNicknameMessageCommand(newNickname, message);
-                        sendMessage(changeNickNameMessageCommand);
-                        networkServer.subscribe(this);
-                    }
+                    changeNicknameCommandProcessing(oldNickname, newNickname);
                     break;
                 }
                 default:
@@ -238,7 +230,32 @@ public class ClientHandler {
     }
 
     /**
-     * чтение данных от клиента
+     * Обрабатывает команду на смену никнейма
+     *
+     * @param oldNickname  - старый никнейм
+     * @param newNickname  - новый никнейм
+     * @throws IOException - пробрасывается исключение
+     */
+    private void changeNicknameCommandProcessing(String oldNickname, String newNickname) throws IOException {
+        int result = networkServer.getAuthService().changeNickname(oldNickname, newNickname);
+        if (result < 1) {
+            Command errorCommand = Command.errorCommand(nicknameAlreadyUsed);
+            sendMessage(errorCommand);
+        } else {
+            networkServer.unsubscribe(this);
+            nickname = newNickname;
+            String broadcastMessage = String.format("%s сменил имя на %s!", oldNickname, nickname);
+            System.out.println(broadcastMessage);
+            networkServer.broadcastMessage(Command.messageCommand(null, broadcastMessage), this);
+            String message = String.format(changeNicknameMessage + "'%s'!", newNickname);
+            Command changeNickNameMessageCommand = Command.changeNicknameMessageCommand(newNickname, message);
+            sendMessage(changeNickNameMessageCommand);
+            networkServer.subscribe(this);
+        }
+    }
+
+    /**
+     * Чтение данных, полученных от клиента
      *
      * @return - возвращает полученную команду, или null в случае ошибки
      * @throws IOException - пробрасывается исключение
@@ -255,6 +272,12 @@ public class ClientHandler {
         }
     }
 
+    /**
+     * Отправляет сообщение клиенту
+     *
+     * @param command - объект, содержащий сообщение
+     * @throws IOException - пробрасывается исключение
+     */
     public void sendMessage(Command command) throws IOException {
         out.writeObject(command);
     }

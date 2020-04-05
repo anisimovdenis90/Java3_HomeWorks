@@ -4,16 +4,19 @@ import java.sql.*;
 
 public class DataBaseAuthService implements AuthService {
 
-    Connection connection;
-    Statement statement;
-    ResultSet resultSet;
+    private Connection connection;
+    private Statement statement;
+    private ResultSet resultSet;
 
     // Новый путь к драйверу последней версии MySQL
-    String driver = "com.mysql.cj.jdbc.Driver";
-    String url = "jdbc:mysql://localhost:3306/";
-    String username = "root";
-    String password = "gtr120519";
-    String dbname = "chat_users";
+    private String driver = "com.mysql.cj.jdbc.Driver";
+    private String url = "jdbc:mysql://localhost:3306/";
+    private String username = "root";
+    private String password = "gtr120519";
+    private String dbname = "chat_users";
+
+    // Для подключения к базе требуется задать часовой пояс
+    private String timeZoneConfiguration = "?serverTimezone=Europe/Moscow&useSSL=false";
 
     public Statement getStatement() {
         return statement;
@@ -27,8 +30,7 @@ public class DataBaseAuthService implements AuthService {
         try {
             // Регистрация драйвера в DriverManager
             Class.forName(driver);
-            // Подключение к базе !!! Требуется задать часовой пояс !!!
-            connection = DriverManager.getConnection(url + dbname + "?serverTimezone=Europe/Moscow&useSSL=false", username, password);
+            connection = DriverManager.getConnection(url + dbname + timeZoneConfiguration, username, password);
             statement = connection.createStatement();
             System.out.println("Подключение к базе данных установлено");
         } catch (ClassNotFoundException e) {
@@ -42,6 +44,7 @@ public class DataBaseAuthService implements AuthService {
 
     /**
      * Возвращает никнейм пользователя при авторизации
+     *
      * @param login    - логин, введенный пользователем
      * @param password - пароль, введенный пользователем
      * @return String  - никнейм пользователя
@@ -63,10 +66,11 @@ public class DataBaseAuthService implements AuthService {
     }
 
     /**
-     * Изменяет никнейм пользователя
+     * Изменяет никнейм пользователя в базе данных
+     *
      * @param oldNickname - старый никнейм пользователя
      * @param newNickname - новый никнейм
-     * @return int        - кол-во измененных строк
+     * @return int - кол-во измененных строк
      */
     @Override
     public int changeNickname(String oldNickname, String newNickname) {
@@ -91,7 +95,7 @@ public class DataBaseAuthService implements AuthService {
             if (connection != null) connection.close();
         } catch (SQLException e) {
             System.err.println("Ошибка закрытия соединения с базой данных");
-            e. printStackTrace();
+            e.printStackTrace();
         }
     }
 }

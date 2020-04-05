@@ -31,11 +31,11 @@ public class AuthCommand implements Serializable {
         this.username = username;
     }
 
-    public void setUserID(String username) {
-        this.userID = username;
-    }
-
     public String getUserID() {
         return userID;
+    }
+
+    public void setUserID(String username) {
+        this.userID = username;
     }
 }
