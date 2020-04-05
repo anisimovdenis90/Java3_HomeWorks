@@ -18,7 +18,6 @@ public class ClientChat extends JFrame {
     private JButton changeNickButton;
     // Ссылка на контроллер
     private ClientController controller;
-    private String selectedContact = "All";
 
     public ClientChat(ClientController controller) {
         this.controller = controller;
@@ -50,8 +49,10 @@ public class ClientChat extends JFrame {
      */
     private void sendChangeNicknameMessage() {
         String newNickname = nicknameText.getText().trim();
-        if (newNickname.length() < 3) {
-            showError("Слишком короткое имя пользователя.");
+        if (newNickname.isEmpty()) {
+            return;
+        } else if (newNickname.length() < 3 || controller.getUsername().equals(newNickname)) {
+            showError("Неверное или слишком короткое имя пользователя.");
             return;
         }
         controller.sendChangeNickNameMessage(newNickname);
@@ -87,9 +88,14 @@ public class ClientChat extends JFrame {
      * @param message - текст полученного сообщения
      */
     public void appendMessage(String message) {
+        controller.getChatHistory().writeHistory(message);
+        updateChatText(message);
+    }
+
+    public void updateChatText(String message) {
         SwingUtilities.invokeLater(() -> {
-            chatText.append(message);
-            chatText.append(System.lineSeparator());
+            chatText.append(message + System.lineSeparator());
+            chatText.setCaretPosition(chatText.getDocument().getLength());
         });
     }
 

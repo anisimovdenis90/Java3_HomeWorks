@@ -8,6 +8,7 @@ public class AuthCommand implements Serializable {
     private final String password;
 
     private String username;
+    private String userID;
 
     public AuthCommand(String login, String password) {
         this.login = login;
@@ -28,5 +29,13 @@ public class AuthCommand implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setUserID(String username) {
+        this.userID = username;
+    }
+
+    public String getUserID() {
+        return userID;
     }
 }

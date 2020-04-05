@@ -150,7 +150,8 @@ public class ClientHandler {
         String login = commandData.getLogin();
         String password = commandData.getPassword();
         // Получаем никнейм авторизованного пользователя
-        String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
+        String userID = networkServer.getAuthService().getUserNickAndIDByLoginAndPassword(login, password)[0];
+        String username = networkServer.getAuthService().getUserNickAndIDByLoginAndPassword(login, password)[1];
         // Если никнейм отсутствует
         if (username == null) {
             Command authErrorCommand = Command.authErrorCommand("Отсутствует учетная запись по данному логину и паролю!");
@@ -168,6 +169,7 @@ public class ClientHandler {
             String message = nickname + " зашел в чат!";
             networkServer.broadcastMessage(Command.messageCommand(null, message), this);
             // Отправляем отклик авторизации клиенту
+            commandData.setUserID(userID);
             commandData.setUsername(nickname);
             sendMessage(command);
             networkServer.subscribe(this);
@@ -197,12 +199,14 @@ public class ClientHandler {
                     PrivateMessageCommand commandData = (PrivateMessageCommand) command.getData();
                     String receiver = commandData.getReceiver();
                     String message = commandData.getMessage();
+                    message = networkServer.getCensorService().censor(message);
                     networkServer.sendPrivateMessage(receiver, Command.privateMessageCommand(receiver, message, nickname));
                     break;
                 }
                 case BROADCAST_MESSAGE: {
                     BroadcastMessageCommand commandData = (BroadcastMessageCommand) command.getData();
                     String message = commandData.getMessage();
+                    message = networkServer.getCensorService().censor(message);
                     networkServer.broadcastMessage(Command.messageCommand(nickname, message), this);
                     break;
                 }

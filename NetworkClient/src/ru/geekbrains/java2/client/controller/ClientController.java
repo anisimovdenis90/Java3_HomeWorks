@@ -13,6 +13,7 @@ public class ClientController {
     private final NetworkService networkService;
     private final AuthDialog authDialog;
     private final ClientChat clientChat;
+    private ChatHistory chatHistory;
     private String nickname;
 
     public ClientController(String serverHost, int serverPort) {
@@ -24,6 +25,14 @@ public class ClientController {
     public void runApplication() throws IOException {
         connectToServer();
         runAuthProcess();
+    }
+
+    public ClientChat getClientChat() {
+        return clientChat;
+    }
+
+    public ChatHistory getChatHistory() {
+        return chatHistory;
     }
 
     /**
@@ -47,9 +56,11 @@ public class ClientController {
         // Задаем никнейм и открываем окно чата при успешной авторизации
         networkService.setSuccessfulAuthEvent(new AuthEvent() {
             @Override
-            public void authIsSuccessful(String nickname) {
+            public void authIsSuccessful(String nickname, String userID) {
                 ClientController.this.setUserName(nickname);
                 // Задаем заголовок окна чата
+                chatHistory = new ChatHistory(ClientController.this, userID);
+                chatHistory.readHistory();
                 clientChat.setTitle(nickname);
                 ClientController.this.openChat();
             }
@@ -156,6 +167,9 @@ public class ClientController {
      * Закрываем соединение при отключении клиента
      */
     public void shutdown() {
+        // Останавливаем поток чтения из файла истории
+        chatHistory.stopWriteChatHistory();
+        // Закрывается соединение
         networkService.close();
     }
 

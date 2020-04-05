@@ -15,6 +15,10 @@ public class DataBaseAuthService implements AuthService {
     String password = "gtr120519";
     String dbname = "chat_users";
 
+    public Statement getStatement() {
+        return statement;
+    }
+
     /**
      * Организует подключение к базе данных пользователей
      */
@@ -25,6 +29,7 @@ public class DataBaseAuthService implements AuthService {
             Class.forName(driver);
             // Подключение к базе !!! Требуется задать часовой пояс !!!
             connection = DriverManager.getConnection(url + dbname + "?serverTimezone=Europe/Moscow&useSSL=false", username, password);
+            statement = connection.createStatement();
             System.out.println("Подключение к базе данных установлено");
         } catch (ClassNotFoundException e) {
             System.err.println("Ошибка загрузки драйвера базы данных!");
@@ -42,19 +47,19 @@ public class DataBaseAuthService implements AuthService {
      * @return String  - никнейм пользователя
      */
     @Override
-    public String getUsernameByLoginAndPassword(String login, String password) {
-        String nickname = null;
+    public String[] getUserNickAndIDByLoginAndPassword(String login, String password) {
+        String[] userNickAndID = new String[2];
         try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(String.format("SELECT nickname FROM users WHERE login = '%s' AND password = '%s'", login, password));
+            resultSet = statement.executeQuery(String.format("SELECT id, nickname FROM users WHERE login = '%s' AND password = '%s'", login, password));
             while (resultSet.next()) {
-                nickname = resultSet.getString("nickname");
+                userNickAndID[0] = "id" + resultSet.getString("id");
+                userNickAndID[1] = resultSet.getString("nickname");
             }
         } catch (SQLException e) {
             System.err.println("Ошибка получения данных из базы");
             e.printStackTrace();
         }
-        return nickname;
+        return userNickAndID;
     }
 
     /**
