@@ -199,12 +199,14 @@ public class ClientHandler {
                     PrivateMessageCommand commandData = (PrivateMessageCommand) command.getData();
                     String receiver = commandData.getReceiver();
                     String message = commandData.getMessage();
+                    message = networkServer.getCensorService().censor(message);
                     networkServer.sendPrivateMessage(receiver, Command.privateMessageCommand(receiver, message, nickname));
                     break;
                 }
                 case BROADCAST_MESSAGE: {
                     BroadcastMessageCommand commandData = (BroadcastMessageCommand) command.getData();
                     String message = commandData.getMessage();
+                    message = networkServer.getCensorService().censor(message);
                     networkServer.broadcastMessage(Command.messageCommand(nickname, message), this);
                     break;
                 }
