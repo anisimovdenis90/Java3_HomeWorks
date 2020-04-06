@@ -14,7 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ClientHandler {
+public class ClientHandler implements Runnable {
 
     private final NetworkServer networkServer;
     private final Socket clientSocket;
@@ -41,6 +41,7 @@ public class ClientHandler {
         return nickname;
     }
 
+    @Override
     public void run() {
         startHandler();
     }
