@@ -6,7 +6,7 @@ public class ServerApp {
 
     public static void main(String[] args) {
         int port = getServerPort(args);
-        new NetworkServer(port).start();
+        new NetworkServer(port, true).start();
     }
 
     /**

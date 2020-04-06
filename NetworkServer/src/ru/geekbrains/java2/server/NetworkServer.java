@@ -3,6 +3,7 @@ package ru.geekbrains.java2.server;
 import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.server.auth.AuthService;
 import ru.geekbrains.java2.server.auth.DataBaseAuthService;
+import ru.geekbrains.java2.server.cens.Censor;
 import ru.geekbrains.java2.server.cens.CensorService;
 import ru.geekbrains.java2.server.client.ClientHandler;
 
@@ -18,12 +19,24 @@ public class NetworkServer {
     private int port;
     private final List<ClientHandler> clients = new ArrayList<>();
     private final AuthService authService;
-    private final CensorService censorService;
 
-    public NetworkServer(int port) {
+    private Censor censor;
+
+    public NetworkServer(int port, boolean enableCensor) {
         this.port = port;
-        this.authService = new DataBaseAuthService();
-        this.censorService = new CensorService((DataBaseAuthService) authService);
+        if (enableCensor) {
+            this.authService = this.censor = new CensorService();
+        } else {
+            this.authService = new DataBaseAuthService();
+        }
+    }
+
+    public String censure(String message) {
+        if (censor != null) {
+            return censor.messageCensor(message);
+        } else {
+            return message;
+        }
     }
 
     /**
@@ -64,10 +77,6 @@ public class NetworkServer {
      */
     public AuthService getAuthService() {
         return authService;
-    }
-
-    public CensorService getCensorService() {
-        return censorService;
     }
 
     /**

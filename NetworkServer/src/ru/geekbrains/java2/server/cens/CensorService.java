@@ -5,19 +5,15 @@ import ru.geekbrains.java2.server.auth.DataBaseAuthService;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CensorService {
+public class CensorService extends DataBaseAuthService implements Censor {
 
     private static final String BAD_WORD_REPLACER = "<censured>";
     private static final String DB_TABLE_NAME = "cens_words";
     private static final String DB_COLUMN_NAME = "bad_word";
     private static final String SQL_FIRST = String.format("SELECT * FROM %s WHERE %s", DB_TABLE_NAME, DB_COLUMN_NAME);
 
-    private DataBaseAuthService dataBase;
-    private ResultSet resultSet;
-
-    public CensorService(DataBaseAuthService dataBase) {
-        this.dataBase = dataBase;
-        System.out.println("Сервис цензуры запущен");
+    public CensorService() {
+        System.out.println("Включена цензурная фильтрация");
     }
 
     /**
@@ -27,7 +23,8 @@ public class CensorService {
      * @param message - переданное на проверку сообщение
      * @return String - обработанное сообщение
      */
-    public String censor(String message) {
+    @Override
+    public String messageCensor(String message) {
         String[] wordsToCheck = message.toLowerCase().split("\\s+");
         for (String word : wordsToCheck) {
             if ((word.length() > 2)) {
@@ -48,15 +45,17 @@ public class CensorService {
      * @return boolean
      */
     private boolean findWordInDB(String wordToCheck) {
-        if (dataBase.getStatement() != null) {
+        if (super.getStatement() != null) {
             try {
-                resultSet = dataBase.getStatement().executeQuery(String.format(SQL_FIRST + " = '%s'", wordToCheck));
+                final ResultSet resultSet = super.getStatement().executeQuery(String.format(SQL_FIRST + " = '%s'", wordToCheck));
                 resultSet.next();
                 if (resultSet.getString(DB_COLUMN_NAME) != null)
                     return true;
             } catch (SQLException e) {
                 return false;
             }
+        } else {
+            System.err.println("Цензура не работает, отсутствует связь с базой данных!");
         }
         return false;
     }

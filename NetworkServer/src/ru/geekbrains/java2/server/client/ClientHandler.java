@@ -7,6 +7,7 @@ import ru.geekbrains.java2.client.commands.BroadcastMessageCommand;
 import ru.geekbrains.java2.client.commands.MessageCommand;
 import ru.geekbrains.java2.client.commands.PrivateMessageCommand;
 import ru.geekbrains.java2.server.NetworkServer;
+import ru.geekbrains.java2.server.cens.Censor;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,11 +37,6 @@ public class ClientHandler {
         this.clientSocket = socket;
     }
 
-    /**
-     * Получение никнейма подключенного контакта
-     *
-     * @return String - никнейм контакта
-     */
     public String getNickname() {
         return nickname;
     }
@@ -205,14 +201,14 @@ public class ClientHandler {
                     PrivateMessageCommand commandData = (PrivateMessageCommand) command.getData();
                     String receiver = commandData.getReceiver();
                     String message = commandData.getMessage();
-                    message = networkServer.getCensorService().censor(message);
+                    message = networkServer.censure(message);
                     networkServer.sendPrivateMessage(receiver, Command.privateMessageCommand(receiver, message, nickname));
                     break;
                 }
                 case BROADCAST_MESSAGE: {
                     BroadcastMessageCommand commandData = (BroadcastMessageCommand) command.getData();
                     String message = commandData.getMessage();
-                    message = networkServer.getCensorService().censor(message);
+                    message = networkServer.censure(message);
                     networkServer.broadcastMessage(Command.messageCommand(nickname, message), this);
                     break;
                 }
