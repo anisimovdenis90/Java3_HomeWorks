@@ -31,6 +31,7 @@ public class ClientHandler implements Runnable {
     private String userAlreadyOnline = "Данный пользователь уже авторизован!";
     private String nicknameAlreadyUsed = "Введенное имя пользователя уже используется.";
     private String changeNicknameMessage = "Ваше имя успешно изменено на ";
+    private String notCensuredNickname = "Недопустимое имя!";
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
         this.networkServer = networkServer;
@@ -234,6 +235,11 @@ public class ClientHandler implements Runnable {
      * @throws IOException - пробрасывается исключение
      */
     private void changeNicknameCommandProcessing(String oldNickname, String newNickname) throws IOException {
+        if (!networkServer.getCensor().isCensured(newNickname)) {
+            Command errorCommand = Command.errorCommand(notCensuredNickname);
+            sendMessage(errorCommand);
+            return;
+        }
         int result = networkServer.getAuthService().changeNickname(oldNickname, newNickname);
         if (result < 1) {
             Command errorCommand = Command.errorCommand(nicknameAlreadyUsed);

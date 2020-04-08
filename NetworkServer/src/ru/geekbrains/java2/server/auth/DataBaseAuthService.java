@@ -18,7 +18,7 @@ public class DataBaseAuthService implements AuthService {
     // Для подключения к базе требуется задать часовой пояс
     private String timeZoneConfiguration = "?serverTimezone=Europe/Moscow&useSSL=false";
 
-    public Statement getStatement() {
+    public synchronized Statement getStatement() {
         return statement;
     }
 
@@ -50,7 +50,7 @@ public class DataBaseAuthService implements AuthService {
      * @return String  - никнейм пользователя
      */
     @Override
-    public String[] getUserNickAndIDByLoginAndPassword(String login, String password) {
+    public synchronized String[] getUserNickAndIDByLoginAndPassword(String login, String password) {
         String[] userNickAndID = new String[2];
         try {
             resultSet = statement.executeQuery(String.format("SELECT id, nickname FROM users WHERE login = '%s' AND password = '%s'", login, password));
@@ -73,7 +73,7 @@ public class DataBaseAuthService implements AuthService {
      * @return int - кол-во измененных строк
      */
     @Override
-    public int changeNickname(String oldNickname, String newNickname) {
+    public synchronized int changeNickname(String oldNickname, String newNickname) {
         int result = 0;
         try {
             result = statement.executeUpdate(String.format("UPDATE users SET nickname = '%s' WHERE nickname = '%s'", newNickname, oldNickname));

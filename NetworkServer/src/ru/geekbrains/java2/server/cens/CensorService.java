@@ -30,7 +30,9 @@ public class CensorService extends DataBaseAuthService implements Censor {
             if ((word.length() > 2)) {
                 if (findWordInDB(word.replace("ё", "е"))) {
                     System.out.println("Сервис цензуры сработал!");
-                    message = message.replace(word, BAD_WORD_REPLACER);
+                    message = message.replace(word, word.length() > 4 ?
+                            String.format("%s%s%s", word.substring(0, 2), BAD_WORD_REPLACER, word.substring(word.length() - 2)) :
+                            String.format("%c%s%c", word.charAt(0), BAD_WORD_REPLACER, word.charAt(word.length() - 1)));
                 }
             }
         }
@@ -48,15 +50,19 @@ public class CensorService extends DataBaseAuthService implements Censor {
         if (super.getStatement() != null) {
             try {
                 final ResultSet resultSet = super.getStatement().executeQuery(String.format(SQL_FIRST + " = '%s'", wordToCheck));
-                resultSet.next();
-                if (resultSet.getString(DB_COLUMN_NAME) != null)
-                    return true;
+                return resultSet.next();
             } catch (SQLException e) {
+                System.err.println("Ошибка получения данных сервером цензуры");
                 return false;
             }
         } else {
             System.err.println("Цензура не работает, отсутствует связь с базой данных!");
         }
         return false;
+    }
+
+    @Override
+    public boolean isCensured(String message) {
+        return message.equals(messageCensor(message));
     }
 }

@@ -1,8 +1,8 @@
 package HomeWork4;
 
 public class StringsInOneLineByThreadWriter {
-    private static final Object lock = new Object();
-    private static volatile String nowWrite;
+    private final Object lock = new Object();
+    private volatile String nowWrite;
 
     public StringsInOneLineByThreadWriter(int countToWrite, String...stringsToWrite) {
         nowWrite = stringsToWrite[0];

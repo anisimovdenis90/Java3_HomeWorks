@@ -6,4 +6,6 @@ public interface Censor extends AuthService {
 
     String messageCensor(String message);
 
+    boolean isCensured(String message);
+
 }

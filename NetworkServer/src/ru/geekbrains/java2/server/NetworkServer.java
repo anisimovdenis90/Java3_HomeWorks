@@ -43,6 +43,10 @@ public class NetworkServer {
         }
     }
 
+    public Censor getCensor() {
+        return censor;
+    }
+
     /**
      * Метод запуска сетевого сервера
      */
