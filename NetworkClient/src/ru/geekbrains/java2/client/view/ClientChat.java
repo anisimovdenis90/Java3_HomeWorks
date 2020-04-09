@@ -51,6 +51,7 @@ public class ClientChat extends JFrame {
     private void sendChangeNicknameMessage() {
         String newNickname = nicknameText.getText().trim();
         if (newNickname.isEmpty()) {
+            nicknameText.setText(null);
             return;
         } else if (newNickname.length() < 3 || controller.getUsername().equals(newNickname)) {
             showError(newNickLengthErrorMessage);
@@ -66,6 +67,7 @@ public class ClientChat extends JFrame {
     private void sendMessage() {
         String message = messageTextField.getText().trim();
         if (message.isEmpty()) {
+            messageTextField.setText(null);
             return;
         }
         // Отправка сообщения всем

@@ -13,17 +13,21 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NetworkServer {
 
     private int port;
     private final List<ClientHandler> clients = new ArrayList<>();
+    private final ExecutorService executor;
     private final AuthService authService;
 
     private Censor censor;
 
     public NetworkServer(int port, boolean enableCensor) {
         this.port = port;
+        this.executor = Executors.newCachedThreadPool();
         if (enableCensor) {
             this.authService = this.censor = new CensorService();
         } else {
@@ -37,6 +41,10 @@ public class NetworkServer {
         } else {
             return message;
         }
+    }
+
+    public Censor getCensor() {
+        return censor;
     }
 
     /**
@@ -62,12 +70,12 @@ public class NetworkServer {
         } finally {
             // Отдельно останавливаем сервис авторизации
             authService.stop();
+            executor.shutdown();
         }
     }
 
     private void createClientHandler(Socket clientSocket) {
-        ClientHandler clientHandler = new ClientHandler(this, clientSocket);
-        clientHandler.run();
+        executor.execute(new ClientHandler(this, clientSocket));
     }
 
     /**
