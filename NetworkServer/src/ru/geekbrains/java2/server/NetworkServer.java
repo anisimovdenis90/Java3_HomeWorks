@@ -47,6 +47,10 @@ public class NetworkServer {
         return censor;
     }
 
+    public ExecutorService getExecutor() {
+        return executor;
+    }
+
     /**
      * Метод запуска сетевого сервера
      */
