@@ -114,13 +114,13 @@ public class ClientHandler implements Runnable {
      */
     private void runTimeOutAuthThread() {
         System.out.println("Ожидание авторизации клиента...");
-        new Thread(() -> {
+        networkServer.getExecutor().execute(() -> {
             try {
-//                Thread.sleep(120_000);
-                // Отправляет время в окно авторизации
+//              Thread.sleep(120_000);
+//                 Отправляет время в окно авторизации
                 for (int i = 120; i > 0; i--) {
                     Command timeoutAuthMessageCommand = Command.timeoutAuthMessageCommand("" + i);
-                    sendMessage(timeoutAuthMessageCommand);
+                    ClientHandler.this.sendMessage(timeoutAuthMessageCommand);
                     Thread.sleep(1_000);
                     // Заранее выходим из цикла при успешной авторизации
                     if (successfulAuth)
@@ -130,15 +130,15 @@ public class ClientHandler implements Runnable {
                 if (!successfulAuth) {
                     System.out.println("Истекло время авторизации, клиент отключен");
                     Command timeOutAuthErrorCommand = Command.timeoutAuthErrorCommand(errorTimeoutAuthMessage);
-                    sendMessage(timeOutAuthErrorCommand);
-                    closeConnection();
+                    ClientHandler.this.sendMessage(timeOutAuthErrorCommand);
+                    ClientHandler.this.closeConnection();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 System.out.println("Авторизация не выполнена, закрыто соединение с клиентом");
             }
-        }).start();
+        });
     }
 
     /**
