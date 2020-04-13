@@ -1,5 +1,7 @@
 package ru.geekbrains.java2.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.server.auth.AuthService;
 import ru.geekbrains.java2.server.auth.DataBaseAuthService;
@@ -17,6 +19,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NetworkServer {
+
+    // Создаю логгеры
+    private static final Logger infoLogger = LogManager.getLogger(NetworkServer.class.getName());
+    private static final Logger fatalLogger = LogManager.getRootLogger();
 
     private int port;
     private final List<ClientHandler> clients = new ArrayList<>();
@@ -51,26 +57,39 @@ public class NetworkServer {
         return executor;
     }
 
+    public static Logger getInfoLogger() {
+        return infoLogger;
+    }
+
+    public static Logger getFatalLogger() {
+        return fatalLogger;
+    }
+
     /**
      * Метод запуска сетевого сервера
      */
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Сервер был успешно запущен на порту " + port);
+//            System.out.println("Сервер был успешно запущен на порту " + port);
+            infoLogger.info("Сервер был успешно запущен на порту " + port);
             //  Запускаем сервис авторизации
             authService.start();
-            System.out.println("Сервис авторизации успешно запущен");
+//            System.out.println("Сервис авторизации успешно запущен");
+            infoLogger.info("Сервис авторизации успешно запущен");
             //  Создаем список подключений
             while (true) {
-                System.out.println("Ожидание подключения клиента...");
+//                System.out.println("Ожидание подключения клиента...");
+                infoLogger.info("Ожидание подключения клиента...");
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Клиент подключился");
+//                System.out.println("Клиент подключился");
+                infoLogger.info("Клиент подключился");
                 //  Создаем обработчик клиента
                 createClientHandler(clientSocket);
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при работе сервера");
-            e.printStackTrace();
+//            System.out.println("Ошибка при работе сервера");
+//            e.printStackTrace();
+            fatalLogger.error("Ошибка при работе сервера", e);
         } finally {
             // Отдельно останавливаем сервис авторизации
             authService.stop();

@@ -60,14 +60,15 @@ public class ClientHandler implements Runnable {
                     authentication();
                     readMessages();
                 } catch (IOException e) {
-                    System.out.printf("Соединение с клиентом %s закрыто!", nickname);
-                    System.out.println();
+//                    System.out.println(String.format("Соединение с клиентом %s закрыто!", nickname));
+                    NetworkServer.getFatalLogger().fatal("Соединение с клиентом закрыто!");
                 } finally {
                     closeConnection();
                 }
             }).start();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal(String.format("Ошибка работы обработчика клиента %s", nickname), e);
         }
     }
 
@@ -80,7 +81,8 @@ public class ClientHandler implements Runnable {
             networkServer.unsubscribe(this);
             clientSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal(String.format("Ошибка при закрытии соединения с клиентом %s", nickname), e);
         }
     }
 
@@ -102,7 +104,8 @@ public class ClientHandler implements Runnable {
                     return;
                 }
             } else {
-                System.err.println("Неверный тип команды процесса авторизации: " + command.getType());
+//                System.err.println("Неверный тип команды процесса авторизации: " + command.getType());
+                NetworkServer.getInfoLogger().error("Неверный тип команды процесса авторизации: " + command.getType());
             }
         }
     }
@@ -111,7 +114,8 @@ public class ClientHandler implements Runnable {
      * Запускает поток лимита времени авторизации клиента
      */
     private void runTimeOutAuthThread() {
-        System.out.println("Ожидание авторизации клиента...");
+//        System.out.println("Ожидание авторизации клиента...");
+        NetworkServer.getInfoLogger().info("Ожидание авторизации клиента...");
         networkServer.getExecutor().execute(() -> {
             try {
 //              Thread.sleep(120_000);
@@ -126,15 +130,18 @@ public class ClientHandler implements Runnable {
                 }
                 // Если клиент не авторизовался, закрывается соединение
                 if (!successfulAuth) {
-                    System.out.println("Истекло время авторизации, клиент отключен");
+//                    System.out.println("Истекло время авторизации, клиент отключен");
+                    NetworkServer.getInfoLogger().info("Истекло время авторизации, клиент отключен");
                     Command timeOutAuthErrorCommand = Command.timeoutAuthErrorCommand(errorTimeoutAuthMessage);
                     ClientHandler.this.sendMessage(timeOutAuthErrorCommand);
                     ClientHandler.this.closeConnection();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                NetworkServer.getFatalLogger().fatal("Ошибка потока таймаута авторизации!", e);
             } catch (IOException e) {
-                System.out.println("Авторизация не выполнена, закрыто соединение с клиентом");
+//                System.out.println("Авторизация не выполнена, закрыто соединение с клиентом");
+                NetworkServer.getFatalLogger().fatal("Авторизация не выполнена, закрыто соединение с клиентом");
             }
         });
     }
@@ -167,7 +174,8 @@ public class ClientHandler implements Runnable {
             return false;
         } else {
             nickname = username;
-            System.out.println(String.format("Клиент %s авторизовался", nickname));
+//            System.out.println(String.format("Клиент %s авторизовался", nickname));
+            NetworkServer.getInfoLogger().info(String.format("Клиент %s авторизовался", nickname));
             String message = nickname + " зашел в чат!";
             networkServer.broadcastMessage(Command.messageCommand(null, message), this);
             // Отправляем отклик авторизации клиенту
@@ -193,7 +201,8 @@ public class ClientHandler implements Runnable {
             switch (command.getType()) {
                 case END: {
                     String message = nickname + " вышел из чата!";
-                    System.out.println(message);
+//                    System.out.println(message);
+                    NetworkServer.getInfoLogger().info(message);
                     networkServer.broadcastMessage(Command.messageCommand(null, message), this);
                     return;
                 }
@@ -220,7 +229,8 @@ public class ClientHandler implements Runnable {
                     break;
                 }
                 default:
-                    System.err.println("Неверный тип команды: " + command.getType());
+//                    System.err.println("Неверный тип команды: " + command.getType());
+                    NetworkServer.getInfoLogger().error("Неверный тип команды: " + command.getType());
             }
         }
     }
@@ -246,7 +256,8 @@ public class ClientHandler implements Runnable {
             networkServer.unsubscribe(this);
             nickname = newNickname;
             String broadcastMessage = String.format("%s сменил имя на %s!", oldNickname, nickname);
-            System.out.println(broadcastMessage);
+//            System.out.println(broadcastMessage);
+            NetworkServer.getInfoLogger().info(broadcastMessage);
             networkServer.broadcastMessage(Command.messageCommand(null, broadcastMessage), this);
             String message = String.format(changeNicknameMessage + "'%s'!", newNickname);
             Command changeNickNameMessageCommand = Command.changeNicknameMessageCommand(newNickname, message);
@@ -266,7 +277,8 @@ public class ClientHandler implements Runnable {
             return (Command) in.readObject();
         } catch (ClassNotFoundException e) {
             String errorMessage = "Неизвестный тип объекта от клиента";
-            System.err.println(errorMessage);
+//            System.err.println(errorMessage);
+            NetworkServer.getInfoLogger().error(errorMessage);
             e.printStackTrace();
             sendMessage(Command.errorCommand(errorMessage));
             return null;

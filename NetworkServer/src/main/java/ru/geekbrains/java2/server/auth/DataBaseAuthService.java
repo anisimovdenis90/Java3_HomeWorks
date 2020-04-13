@@ -1,5 +1,7 @@
 package ru.geekbrains.java2.server.auth;
 
+import ru.geekbrains.java2.server.NetworkServer;
+
 import java.sql.*;
 
 public class DataBaseAuthService implements AuthService {
@@ -32,13 +34,16 @@ public class DataBaseAuthService implements AuthService {
             Class.forName(driver);
             connection = DriverManager.getConnection(url + dbname + timeZoneConfiguration, username, password);
             statement = connection.createStatement();
-            System.out.println("Подключение к базе данных установлено");
+//            System.out.println("Подключение к базе данных установлено");
+            NetworkServer.getInfoLogger().info("Подключение к базе данных установлено");
         } catch (ClassNotFoundException e) {
-            System.err.println("Ошибка загрузки драйвера базы данных!");
-            e.printStackTrace();
+//            System.err.println("Ошибка загрузки драйвера базы данных!");
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal("Ошибка загрузки драйвера базы данных!", e);
         } catch (SQLException e) {
-            System.err.println("Ошибка подключения к базе данных!");
-            e.printStackTrace();
+//            System.err.println("Ошибка подключения к базе данных!");
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal("Ошибка подключения к базе данных!", e);
         }
     }
 
@@ -59,8 +64,9 @@ public class DataBaseAuthService implements AuthService {
                 userNickAndID[1] = resultSet.getString("nickname");
             }
         } catch (SQLException e) {
-            System.err.println("Ошибка получения данных из базы");
-            e.printStackTrace();
+//            System.err.println("Ошибка получения данных из базы!");
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal("Ошибка получения данных из базы!", e);
         }
         return userNickAndID;
     }
@@ -78,8 +84,9 @@ public class DataBaseAuthService implements AuthService {
         try {
             result = statement.executeUpdate(String.format("UPDATE users SET nickname = '%s' WHERE nickname = '%s'", newNickname, oldNickname));
         } catch (SQLException e) {
-            System.err.println("Ошибка изменения данных в базе");
-            e.printStackTrace();
+//            System.err.println("Ошибка изменения данных в базе");
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal("Ошибка изменения данных в базе", e);
         }
         return result;
     }
@@ -94,8 +101,9 @@ public class DataBaseAuthService implements AuthService {
             if (statement != null) statement.close();
             if (connection != null) connection.close();
         } catch (SQLException e) {
-            System.err.println("Ошибка закрытия соединения с базой данных");
-            e.printStackTrace();
+//            System.err.println("Ошибка закрытия соединения с базой данных");
+//            e.printStackTrace();
+            NetworkServer.getFatalLogger().fatal("Ошибка закрытия соединения с базой данных", e);
         }
     }
 }
