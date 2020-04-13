@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Java3_HomeWorks" />
+        <module name="NetworkServer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Java3_HomeWorks" target="11" />
+      <module name="NetworkServer" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

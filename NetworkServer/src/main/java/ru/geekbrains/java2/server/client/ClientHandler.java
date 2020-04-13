@@ -7,7 +7,6 @@ import ru.geekbrains.java2.client.commands.BroadcastMessageCommand;
 import ru.geekbrains.java2.client.commands.MessageCommand;
 import ru.geekbrains.java2.client.commands.PrivateMessageCommand;
 import ru.geekbrains.java2.server.NetworkServer;
-import ru.geekbrains.java2.server.cens.Censor;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -67,7 +66,6 @@ public class ClientHandler implements Runnable {
                     closeConnection();
                 }
             }).start();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
