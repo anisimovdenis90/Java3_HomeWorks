@@ -26,8 +26,8 @@ public class ArrayProcessingTest {
     }
 
     @Parameterized.Parameters
-    public static Collection data() {
-        return Arrays.asList(new Object[][]{
+    public static Collection<int[][]> data() {
+        return Arrays.asList(new int[][][]{
                 {new int[] {1, 2, 4, 4, 2, 3, 4, 1, 7},     // Тестовый массив для задания №1
                         new int[] {1, 7},                   // Правильный результат для задания №1
                         new int[] {1, 2, 3, 1},             // Тестовый массив на RuntimeException для задания №1
@@ -52,22 +52,22 @@ public class ArrayProcessingTest {
     }
 
     @Test
-    public void numbersAfterLastFour () {
+    public void testNumbersAfterLastFour () {
         Assert.assertArrayEquals(resultArray1, ArrayProcessing.numbersAfterLastFour(testArray1));
     }
 
     @Test(expected = RuntimeException.class)
-    public void numbersAfterLastFourExeption () {
+    public void testNumbersAfterLastFourExeption () {
         ArrayProcessing.numbersAfterLastFour(testArrayException1);
     }
 
     @Test
-    public void isConsistOfNumbersTrue () {
+    public void testIsConsistOfNumbersTrue () {
         Assert.assertTrue(ArrayProcessing.isConsistOfNumbers(tesTrueArray2));
     }
 
     @Test
-    public void isConsistOfNumbersFalse () {
+    public void testIsConsistOfNumbersFalse () {
         Assert.assertFalse(ArrayProcessing.isConsistOfNumbers(testFalseArray2));
     }
 
