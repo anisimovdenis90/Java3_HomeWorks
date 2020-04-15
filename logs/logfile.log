@@ -1,0 +1,12 @@
+INFO  2020-04-13 14:08:02 [main] ru.geekbrains.java2.server.cens.CensorService (CensorService.java:18) - Включена цензурная фильтрация
+INFO  2020-04-13 14:08:02 [main] ru.geekbrains.java2.server.NetworkServer (NetworkServer.java:74) - Сервер был успешно запущен на порту 8189
+INFO  2020-04-13 14:08:02 [main] ru.geekbrains.java2.server.auth.DataBaseAuthService (DataBaseAuthService.java:38) - Подключение к базе данных установлено
+INFO  2020-04-13 14:08:02 [main] ru.geekbrains.java2.server.NetworkServer (NetworkServer.java:78) - Сервис авторизации успешно запущен
+INFO  2020-04-13 14:08:02 [main] ru.geekbrains.java2.server.NetworkServer (NetworkServer.java:82) - Ожидание подключения клиента...
+INFO  2020-04-13 14:08:07 [main] ru.geekbrains.java2.server.NetworkServer (NetworkServer.java:85) - Клиент подключился
+INFO  2020-04-13 14:08:07 [main] ru.geekbrains.java2.server.NetworkServer (NetworkServer.java:82) - Ожидание подключения клиента...
+INFO  2020-04-13 14:08:07 [Thread-0] ru.geekbrains.java2.server.client.ClientHandler (ClientHandler.java:118) - Ожидание авторизации клиента...
+INFO  2020-04-13 14:08:13 [Thread-0] ru.geekbrains.java2.server.client.ClientHandler (ClientHandler.java:178) - Клиент username1 авторизовался
+INFO  2020-04-13 14:08:18 [Thread-0] ru.geekbrains.java2.server.client.ClientHandler (ClientHandler.java:260) - username1 сменил имя на user!
+INFO  2020-04-13 14:08:23 [Thread-0] ru.geekbrains.java2.server.client.ClientHandler (ClientHandler.java:260) - user сменил имя на username1!
+INFO  2020-04-13 14:08:25 [Thread-0] ru.geekbrains.java2.server.client.ClientHandler (ClientHandler.java:205) - username1 вышел из чата!
