@@ -60,8 +60,8 @@ public class RunTestClasses {
         final List<Map.Entry<Method, Integer>> sortedByPriorityMethods = new ArrayList<>(methodsToStart.entrySet());
         sortedByPriorityMethods.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
-         for (Map.Entry<Method, Integer> sortedMethod : sortedByPriorityMethods) {
-            sortedMethod.getKey().invoke(instanceOfTestClass);
-         }
+        for (Map.Entry<Method, Integer> sortedMethod : sortedByPriorityMethods) {
+           sortedMethod.getKey().invoke(instanceOfTestClass);
+        }
     }
 }
