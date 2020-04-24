@@ -25,7 +25,7 @@ public class RunTestClasses {
     }
 
     private static void testClassProcessing(Class<?> testClass) {
-        if (methodsToStart.size() != 0) {
+        if (methodsToStart.isEmpty()) {
             methodsToStart.clear();
         }
 
@@ -42,7 +42,7 @@ public class RunTestClasses {
         }
 
         try {
-            sotrByPriorityAndStartMethods(testClass.getConstructor().newInstance());
+            sortByPriorityAndStartMethods(testClass.getConstructor().newInstance());
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Невозможно создать экземпляр тестового класса!");
         }
@@ -56,7 +56,7 @@ public class RunTestClasses {
         }
     }
 
-    private static <T> void sotrByPriorityAndStartMethods(T instanceOfTestClass) throws InvocationTargetException, IllegalAccessException {
+    private static <T> void sortByPriorityAndStartMethods(T instanceOfTestClass) throws InvocationTargetException, IllegalAccessException {
         final List<Map.Entry<Method, Integer>> sortedByPriorityMethods = new ArrayList<>(methodsToStart.entrySet());
         sortedByPriorityMethods.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
